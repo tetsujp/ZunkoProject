@@ -4,55 +4,54 @@ using System.Collections.Generic;
 
 
 //ずん子を動かす
-public class ZunkoController : MonoBehaviour {
+//アクティブになっているFieldのみに適応
+public class ZunkoController : MonoBehaviour
+{
 
-    readonly static int MAX_ZUNKO_COUNT = 100;
-    //フィールド上のズン子のリスト
-    List<GameObject> zunkoList = new List<GameObject>();
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-
-	}
-    public bool isCreatable()
+    ZunkoManager zunkoManager;
+    bool isNowChange = false;
+    bool isSet = false;
+    // Use this for initialization
+    void Start()
     {
-        return MAX_ZUNKO_COUNT > zunkoList.Count;
+        zunkoManager = gameObject.GetComponent<ZunkoManager>();
     }
 
-    public void AddZunkoList(GameObject zunko)
+    // Update is called once per frame
+    void Update()
     {
-        zunkoList.Add(zunko);
-    }
-
-    public void removeZunkoList(GameObject zunko)
-    {
-        zunkoList.Remove(zunko);
+        Select();
     }
 
     //マウス操作で動かす
-    void Mover()
+    void Select()
     {
-        //ボタン入力
+        //選択
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 worldPoint2d = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            foreach (var zunko in zunkoList)
+            isNowChange = zunkoManager.SetSelect(worldPoint2d);
+            if (isNowChange == true) isSet = true;
+            else if (isNowChange == false && isSet == true)
             {
-                //すでに選択したずん子を選択で解除
-                if (zunko.collider2D.OverlapPoint(worldPoint2d))
-                {
-                    zunko.GetComponent<ChibiZunko>().Select();
-                    //1体だけ選択
-                    break;
-                }
-                
+                Move();
             }
         }
+        //全て選択から外す
+        if (Input.GetMouseButtonDown(1) && isSet == true)
+        {
+            zunkoManager.CancelSelect();
+            isSet = false;
+        }
     }
+    void Move()
+    {
+        //移動先を選択し移動
+            Vector2 worldPoint2d = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            
+            //zunkoManager.Move(Input.mousePosition);
+            zunkoManager.Move(worldPoint2d);    
+        isSet = false;
+    }
+
 }

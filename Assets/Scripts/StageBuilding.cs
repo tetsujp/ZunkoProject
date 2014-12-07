@@ -10,10 +10,10 @@ public class StageBuilding : MonoBehaviour {
     //public Sprite imageSprite;
 
 
-    SelectManager selectManager;
+    SelectScene selectScene;
 	// Use this for initialization
 	void Start () {
-        selectManager = GameObject.FindGameObjectWithTag("SelectManager").GetComponent<SelectManager>();
+        selectScene = GameObject.FindGameObjectWithTag("SelectScene").GetComponent<SelectScene>();
 	}
 	
 	// Update is called once per frame
@@ -23,7 +23,7 @@ public class StageBuilding : MonoBehaviour {
     void ChangeScene()
     {
         //フィールドシーンへ
-        selectManager.ChangeToFieldScene(stageName);
+        selectScene.ChangeToFieldScene(stageName);
     }
 
 }

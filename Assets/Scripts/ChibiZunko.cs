@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChibiZunko : MonoBehaviour {
+public class ChibiZunko : MonoBehaviour
+{
     //enum StateName { Awake, Wait, Attack, Walk,Chase,Rest }
 
     //Animation
@@ -16,79 +17,99 @@ public class ChibiZunko : MonoBehaviour {
 
     static float INITHP = 10f;
 
-    public float power{get;private set;}
-    public bool selected{get;private set;}
-    public bool leftFace{get;private set;}
-    public bool alive{get;private set;}
-    public FieldObject target{get;private set;}
+    public float power { get; private set; }
+    public bool selected { get; private set; }
+    public bool leftFace { get; private set; }
+    public bool alive { get; private set; }
+    public Vector2 target { get; private set; }
 
     public float HP { get; set; }
-    public float initHP{get;set;}
+    public float initHP;
+    float velocity = 0.1f;
 
-    FieldScene fieldScene;
+
+    ZunkoManager zunkoManager;
     ZunkoController zunkoController;
 
     AnimatorStateInfo stateInfo;
 
     //private ChibiZunkoState state;
     //private ImageLoader ld;
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         power = 1f;
         selected = false;
         leftFace = true;
         //target = null;
         initHP = INITHP;
         HP = initHP;
+        target = transform.position;
         animator = GetComponent<Animator>();
-        fieldScene = gameObject.transform.parent.gameObject.GetComponent<FieldScene>();
-        zunkoController = gameObject.transform.parent.gameObject.GetComponent<ZunkoController>();
-        //stateInfo = StateName.Awake;
-        //setCollision(new RectF(0, 0, COL_WID, COL_HEI));
+        zunkoManager = gameObject.transform.parent.gameObject.GetComponent<ZunkoManager>();
+    }
 
-        //state = new ChibiZunkoStateSpawn(this);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-	}
-
-
-    public void Chase(FieldObject target)
+    // Update is called once per frame
+    void Update()
     {
-        if (stateInfo.nameHash == ANI_CHASE) return;
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        Move();
+    }
 
-        this.target = target;
+    //ずん子が自分で変更する内容
+    private void Move()
+    {
+        if (stateInfo.nameHash == ANI_CHASE)
+        {
+            //移動
+            Vector3 toVect = new Vector3(target.x - transform.position.x, target.y - transform.position.y, 0).normalized;
+            transform.position += toVect * velocity;
+            //十分近づいたら止まる
+            //targetが当たり判定に存在
+            if (GetComponent<CircleCollider2D>().OverlapPoint(target))
+            {
+                UnsetChasing();
+            }
+        }
+    }
+
+
+
+    //ZunkoManagerが行う内容
+    public void Chase(Vector3 targetPosition)
+    {
+        //if (stateInfo.nameHash == ANI_CHASE) return;
+
+        this.target = targetPosition;
+        SetSelect(false);
         animator.SetTrigger("chase");
     }
+
     public void UnsetChasing()
     {
-        if (target != null&&stateInfo.nameHash==ANI_CHASE)
+        if (stateInfo.nameHash == ANI_CHASE)
         {
-            target = null;
-            //state = new ChibiZunkoStateWait(this);
+            target = gameObject.transform.position;
             animator.SetTrigger("wait");
         }
     }
 
-    public void StartAttack(FieldObject target)
+    public void StartAttack()
     {
-        if (stateInfo.nameHash == ANI_ATTACK
-                || stateInfo.nameHash == ANI_REST)
-            return;
+        //if (stateInfo.nameHash == ANI_ATTACK
+        //        || stateInfo.nameHash == ANI_REST)
+        //    return;
 
-        this.target = target;
+        this.target = targetPosition;
         //state = StateName.Attack;
         animator.SetTrigger("Attack");
     }
 
     public void EndAttack()
     {
-        if (target != null&&stateInfo.nameHash==ANI_ATTACK)
+        if (stateInfo.nameHash == ANI_ATTACK)
         {
-            target = null;
+            target = gameObject.transform.position;
             //state=StateName.Wait;
             animator.SetTrigger("wait");
         }
@@ -96,10 +117,6 @@ public class ChibiZunko : MonoBehaviour {
 
     public void Walk()
     {
-        if (stateInfo.nameHash == ANI_WALK)
-        {
-
-        }
 
     }
     public void Rest()
@@ -111,7 +128,7 @@ public class ChibiZunko : MonoBehaviour {
     }
     public void DeleteThis()
     {
-        zunkoController.removeZunkoList(gameObject);
+        zunkoManager.RemoveZunkoList(gameObject);
 
     }
 
@@ -119,10 +136,28 @@ public class ChibiZunko : MonoBehaviour {
     {
         leftFace = left;
     }
-    public void Select() { selected = !selected; }
-    public void Select(bool flag)
+    public void ReverseSelect()
+    {
+        SetSelect(!selected);
+    }
+    public void SetSelect(bool flag)
     {
         selected = flag;
+        //画像の色変更
+        ChangeColor();
+    }
+    //select時画像色変更
+    void ChangeColor()
+    {
+        //標準
+        if (!selected)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        }
+        else
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 0.3f, 0.1f, 1f);
+        }
     }
     public void Damage(float val)
     {
