@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//使用せず
 public class FieldObject : MonoBehaviour {
 
     //protected RectF col;

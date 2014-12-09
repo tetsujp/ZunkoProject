@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 //ずん子管理用
+//マウス操作も管理
 public class ZunkoManager : MonoBehaviour
 {
 
@@ -10,9 +11,9 @@ public class ZunkoManager : MonoBehaviour
     readonly static int MAX_ZUNKO_COUNT = 100;
 
     //現在Activeなフィールドか
-    bool isActiveField;
+    bool isActiveField=true;
     List<GameObject> zunkoList = new List<GameObject>();
-
+    BuildingManager buildingManager;
 
     //アクティブ時の操作用の変数
     bool isNowChange = false;
@@ -35,7 +36,7 @@ public class ZunkoManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        buildingManager = gameObject.GetComponent<BuildingManager>();
     }
 
     // Update is called once per frame
@@ -63,7 +64,8 @@ public class ZunkoManager : MonoBehaviour
             //    //マウスが乗っかったもののみ選択を反転
             //    //同じ位置にいる場合全てが選択
             Vector2 worldPoint2d = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var query = zunkoList.Where(z => z.collider2D.OverlapPoint(worldPoint2d) == true).ToList();
+            var query = zunkoList.Where(z => z.collider2D.OverlapPoint(worldPoint2d) == true&&z.GetComponent<ChibiZunko>().IsNowAttack()==false)
+                .ToList();
             query.ForEach(z => z.GetComponent<ChibiZunko>().ReverseSelect());
             if (query.Count != 0) isNowChange = true;
         }
@@ -80,7 +82,7 @@ public class ZunkoManager : MonoBehaviour
     //指定した位置に移動
     void Move()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&isNowChange==false)
         {
             Vector2 worldPoint2d = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             zunkoList.Where(p => p.GetComponent<ChibiZunko>().selected == true)

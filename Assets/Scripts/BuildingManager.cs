@@ -7,14 +7,14 @@ public class BuildingManager : MonoBehaviour {
 
     //Buildingリスト
     List<GameObject> buildingList = new List<GameObject>();
-    //ずん子の管理
+    //ずん子生成用
     ZunkoManager zunkoManager;
     // Use this for initialization
 	void Start () {
 
         zunkoManager = gameObject.GetComponent<ZunkoManager>();
         foreach(Transform child in transform){
-            if (child.tag == "StageBuilding")
+            if (child.tag == "FieldBuilding")
             {
                 buildingList.Add(child.gameObject);
             }
