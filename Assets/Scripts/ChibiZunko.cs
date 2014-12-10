@@ -15,7 +15,7 @@ public class ChibiZunko : MonoBehaviour
 
     Animator animator;
 
-    static float INITHP = 20;
+    static float INITHP = 20f;
     static float DAMAGE_VALUE = 1f;
 
     public float power { get; private set; }
@@ -26,7 +26,7 @@ public class ChibiZunko : MonoBehaviour
     public GameObject targetBuilding{get;private set;}
 
 
-    public float HP { get; set; }
+    float HP;
     public float initHP;
     float[] VELOCITY ={ 1f, 2f };
     float velocity;
@@ -44,6 +44,9 @@ public class ChibiZunko : MonoBehaviour
     [System.NonSerialized]
     public AnimatorStateInfo stateInfo;
 
+
+    //攻撃セット用
+    bool isStartAttack = false;
     //private ChibiZunkoState state;
     //private ImageLoader ld;
     // Use this for initialization
@@ -72,14 +75,15 @@ public class ChibiZunko : MonoBehaviour
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         Move();
-        
+        SetAttack();
     }
 
     //ずん子が自分で変更する内容
     private void Move()
     {
         Walk();
-        if (stateInfo.nameHash == ANI_CHASE || stateInfo.nameHash == ANI_WALK)
+        //if (stateInfo.nameHash == ANI_CHASE || stateInfo.nameHash == ANI_WALK)
+        if (animator.GetCurrentAnimatorStateInfo(0).nameHash == ANI_CHASE || animator.GetCurrentAnimatorStateInfo(0).nameHash == ANI_WALK)
         {
             //移動
             Vector3 toVect = new Vector3(target.x - transform.position.x, target.y - transform.position.y, 0).normalized;
@@ -108,7 +112,7 @@ public class ChibiZunko : MonoBehaviour
             //十分近づいたら止まる
             //targetが当たり判定に存在
             //移動制限がかかる場合も停止
-            if (GetComponent<CircleCollider2D>().OverlapPoint(target)||isClamp)
+            if ((GetComponent<CircleCollider2D>().OverlapPoint(target)||isClamp==true)&&isStartAttack==false)
             {
                 Stop();
             }
@@ -142,7 +146,16 @@ public class ChibiZunko : MonoBehaviour
     {
         this.target = gameObject.transform.position;
         targetBuilding = target;
-        animator.SetTrigger("attack");
+        isStartAttack = true;
+        //animator.SetTrigger("attack");
+    }
+    void SetAttack()
+    {
+        if (isStartAttack == true)
+        {
+            animator.SetTrigger("attack");
+            isStartAttack = false;
+        }
     }
 
     public void EndAttack()
@@ -150,6 +163,7 @@ public class ChibiZunko : MonoBehaviour
         if (stateInfo.nameHash == ANI_ATTACK)
         {
             target = gameObject.transform.position;
+            targetBuilding = null;
             //state=StateName.Wait;
             animator.SetTrigger("wait");
         }
@@ -236,20 +250,23 @@ public class ChibiZunko : MonoBehaviour
         if (stateInfo.nameHash == ANI_ATTACK)
         {
             //Buildingにダメージ
-            targetBuilding.GetComponent<FieldBuilding>().Damage(power);
-            //Creatorになったら攻撃ストップ
-            if (targetBuilding.GetComponent<FieldBuilding>().isCreator())
+            if (targetBuilding != null)
             {
-                EndAttack();
-            }
-            else
-            {
-
-                //自分にダメージ
-                HP -= DAMAGE_VALUE;
-                if (HP <= 0)
+                targetBuilding.GetComponent<FieldBuilding>().Damage(power);
+                //Creatorになったら攻撃ストップ
+                if (targetBuilding.GetComponent<FieldBuilding>().isCreator())
                 {
-                    Rest();
+                    EndAttack();
+                }
+                else
+                {
+
+                    //自分にダメージ
+                    HP -= DAMAGE_VALUE;
+                    if (HP <= 0)
+                    {
+                        Rest();
+                    }
                 }
             }
         }
