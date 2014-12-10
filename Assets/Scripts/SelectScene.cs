@@ -44,11 +44,13 @@ public class SelectScene : MonoBehaviour {
             foreach(var field in preField){
                 if(field.GetComponent<FieldScene>().fieldName==stageName){
                     fieldList.Add(stageName,(GameObject)Instantiate(field));
+                    return;
                 }
             }
         }
 
         //フィールドシーンのアクティブ化
-        fieldList[stageName].SetActive(true);
+        //fieldList[stageName].SetActive(true);
+        fieldList[stageName].GetComponent<FieldScene>().Resume();
     }
 }

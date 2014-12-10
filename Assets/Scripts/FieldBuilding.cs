@@ -14,7 +14,7 @@ public class FieldBuilding: MonoBehaviour {
     public float nowHP;
     public float initHP;
     public Sprite creatorSprite;
-
+    //public bool isActive = true;
     //攻撃しているずん子リスト
     //List<GameObject> targeted=new List<GameObject>();
     // Use this for initialization
@@ -73,6 +73,7 @@ public class FieldBuilding: MonoBehaviour {
                 Vector2 startPosition = new Vector2(transform.position.x + Random.value * createSpace * 2 - createSpace, transform.position.y + Random.value * createSpace * 2 - createSpace);
                 GameObject newZunko=(GameObject)Instantiate(preZunko, startPosition, transform.rotation);
                 newZunko.transform.parent = gameObject.transform.parent;
+                if (gameObject.renderer.enabled == true) newZunko.renderer.enabled = true;
                 zunkoManager.AddZunkoList(newZunko);
             }
                 yield return new WaitForSeconds(createInterval);

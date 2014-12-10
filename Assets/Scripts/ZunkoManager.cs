@@ -11,7 +11,7 @@ public class ZunkoManager : MonoBehaviour
     readonly static int MAX_ZUNKO_COUNT = 100;
 
     //現在Activeなフィールドか
-    bool isActiveField=true;
+    public bool isActive=true;
     List<GameObject> zunkoList = new List<GameObject>();
     BuildingManager buildingManager;
 
@@ -42,7 +42,7 @@ public class ZunkoManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isActiveField)
+        if (isActive)
         {
             UpdateControl();
         }
@@ -55,6 +55,7 @@ public class ZunkoManager : MonoBehaviour
         Move();
 
     }
+
 
     void UpdateSelect()
     {
