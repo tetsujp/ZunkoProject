@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 //ずん子管理用
 //マウス操作も管理
 public class ZunkoManager : MonoBehaviour
@@ -19,6 +20,7 @@ public class ZunkoManager : MonoBehaviour
     bool isNowChange = false;
     bool isSet = false;
 
+    Text zunkoNumberText;
     public bool isCreatable()
     {
         return MAX_ZUNKO_COUNT > zunkoList.Count;
@@ -37,14 +39,17 @@ public class ZunkoManager : MonoBehaviour
     void Start()
     {
         buildingManager = gameObject.GetComponent<BuildingManager>();
+        zunkoNumberText = transform.Find("Canvas/ZunkoNumber").GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (isActive)
         {
             UpdateControl();
+            SetZunkoNumberText();
         }
     }
 
@@ -91,5 +96,12 @@ public class ZunkoManager : MonoBehaviour
                 .ForEach(z => z.GetComponent<ChibiZunko>().Chase(worldPoint2d));
         }
     }
-
+    public int GetZunkoCount()
+    {
+        return zunkoList.Count;
+    }
+    void SetZunkoNumberText()
+    {
+        zunkoNumberText.text = "地域のずんこ: " + GetZunkoCount() + "ずん";
+    }
 }

@@ -10,9 +10,9 @@ public class FieldBuilding: MonoBehaviour {
     //public bool isBuildingState=false; 
     bool isCreatable;//ずん子が最大数に達したか
     [System.NonSerialized]public float createInterval=1f;//生成間隔
-    [System.NonSerialized]
-    public float nowHP;
+    float nowHP;
     public float initHP;
+    float addSize = 0.01f;
     public Sprite creatorSprite;
     //public bool isActive = true;
     //攻撃しているずん子リスト
@@ -30,6 +30,8 @@ public class FieldBuilding: MonoBehaviour {
         {
             SetBuildingState();
         }
+        //サイズ変更
+        transform.localScale += new Vector3(initHP * addSize, initHP * addSize, 0);
     }
 	
 	// Update is called once per frame
@@ -73,7 +75,11 @@ public class FieldBuilding: MonoBehaviour {
                 Vector2 startPosition = new Vector2(transform.position.x + Random.value * createSpace * 2 - createSpace, transform.position.y + Random.value * createSpace * 2 - createSpace);
                 GameObject newZunko=(GameObject)Instantiate(preZunko, startPosition, transform.rotation);
                 newZunko.transform.parent = gameObject.transform.parent;
-                if (gameObject.renderer.enabled == true) newZunko.renderer.enabled = true;
+                if (gameObject.renderer.enabled == true)
+                {
+                    //newZunko.renderer.enabled = true;
+                    newZunko.GetComponent<Renderer>().enabled = true;
+                }
                 zunkoManager.AddZunkoList(newZunko);
             }
                 yield return new WaitForSeconds(createInterval);

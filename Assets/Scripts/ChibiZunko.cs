@@ -15,7 +15,7 @@ public class ChibiZunko : MonoBehaviour
 
     Animator animator;
 
-    static float INITHP = 20f;
+    public float INITHP = 20f;
     static float DAMAGE_VALUE = 1f;
 
     public float power { get; private set; }
@@ -27,7 +27,7 @@ public class ChibiZunko : MonoBehaviour
 
 
     float HP;
-    public float initHP;
+    float initHP;
     float[] VELOCITY ={ 1f, 2f };
     float velocity;
     //ランダムで歩く確率
@@ -297,6 +297,21 @@ public class ChibiZunko : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+    //rest時のエフェクト再生
+    public void RestAnimation(){
+        if (gameObject.GetComponent<SpriteRenderer>().enabled == true)
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            gameObject.transform.FindChild("RestPart").particleSystem.Play();
+        }
+    }
+    public void AwakeAnimation()
+    {
+        if (gameObject.GetComponent<SpriteRenderer>().enabled == true)
+        {
+            gameObject.transform.FindChild("AwakePart").particleSystem.Play();
         }
     }
 }
