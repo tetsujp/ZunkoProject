@@ -36,6 +36,7 @@ public class MainCamera : MonoBehaviour
         fieldVector[0].y = field.GetComponent<MeshFilter>().mesh.vertices[3].y * field.localScale.y;
         fieldVector[1].x = field.GetComponent<MeshFilter>().mesh.vertices[2].x * field.localScale.x;
         fieldVector[1].y = field.GetComponent<MeshFilter>().mesh.vertices[2].y * field.localScale.y;
+        Camera.main.orthographicSize = 8f;
     }
     void SetStartPosition()
     {
@@ -74,7 +75,7 @@ public class MainCamera : MonoBehaviour
     {
         float vect=Input.GetAxis("Mouse ScrollWheel");
         Camera.main.orthographicSize -= vect;
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 3f, 10f);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 3f, 12f);
     }
     void Clamp()
     {

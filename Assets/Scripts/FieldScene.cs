@@ -7,7 +7,12 @@ public class FieldScene : MonoBehaviour {
     public string fieldName;
 
     Dictionary<string, string> filedDic = new Dictionary<string, string>(){
-        {"Sendai","仙台"},{"Matsushima","松島"},{"Naruko","鳴子"}
+        {"Sendai","仙台"},{"Matsushima","松島"},{"Naruko","鳴子"},
+        {"Hukushima","福島"},
+        {"Akita","秋田"},
+        {"Iwate","岩手"},
+        {"Yamagata","山形"},
+        {"Aomori","青森"},
     };
     //フィールド名
 

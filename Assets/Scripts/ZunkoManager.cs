@@ -9,7 +9,7 @@ public class ZunkoManager : MonoBehaviour
 {
 
     //ずん子の最大数
-    readonly static int MAX_ZUNKO_COUNT = 100;
+    readonly static int MAX_ZUNKO_COUNT = 150;
 
     //現在Activeなフィールドか
     public bool isActive=true;

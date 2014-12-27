@@ -9,10 +9,10 @@ public class FieldBuilding: MonoBehaviour {
     ZunkoManager zunkoManager;
     //public bool isBuildingState=false; 
     bool isCreatable;//ずん子が最大数に達したか
-    [System.NonSerialized]public float createInterval=1f;//生成間隔
+    [System.NonSerialized]public float createInterval=5f;//生成間隔
     float nowHP;
     public float initHP;
-    float addSize = 0.01f;
+    float addSize = 0.001f;
     public Sprite creatorSprite;
     //public bool isActive = true;
     //攻撃しているずん子リスト

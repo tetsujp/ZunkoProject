@@ -14,7 +14,7 @@ public class BigZunko : MonoBehaviour {
     GameObject clearPanel;
     void Start () {
         //voiceText = gameObject.transform.FindChild("Voice").GetComponent<Text>();
-        numberText = gameObject.transform.FindChild("NumberText").GetComponent<Text>();
+        numberText = gameObject.transform.parent.FindChild("NumberText").GetComponent<Text>();
         clearPanel=gameObject.transform.FindChild("Clear").gameObject;
         stageCount = GameObject.FindGameObjectsWithTag("StageBuilding").ToList().Count;
 	}
